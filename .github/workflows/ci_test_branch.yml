@@ -1,0 +1,39 @@
+name: Test-Branch CI
+
+on:
+  push:
+    branches:
+      - test_branch
+  pull_request:
+    branches:
+      - test_branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Test branch for tests
+      uses: actions/checkout@v3
+      with:
+        ref: Test  
+    - name: Checkout test-branch branch for code
+      uses: actions/checkout@v3
+      with:
+        ref: test-branch  
+        path: ./code 
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8  
+
+    # Install dependencies for test-branch
+    - name: Install dependencies for test-branch
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r tests/test_branch/requirements.txt  
+
+    - name: Run test-branch tests
+      run: |
+        pytest tests/test_branch/  
